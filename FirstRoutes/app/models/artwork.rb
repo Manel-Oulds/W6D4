@@ -16,4 +16,12 @@ class Artwork < ApplicationRecord
     belongs_to :artist, primary_key: :id, class_name: 'User', foreign_key: :artist_id
     has_many :artwork_shares, primary_key: :id, foreign_key: :artwork_id, class_name: :ArtworkShare, dependent: :destroy
     has_many :shared_viewers, through: :artwork_shares, source: :viewer
+
+    def self.artworks_for_user_id(user_id)
+        artworks = ArtworkShare.where(viewer_id: user_id).or(Artwork.where(artist_id: user_id))
+            .joins(:artwork).joins(:viewer)
+            .select("artworks.title,artworks.img_url,artworks.artist_id")
+            .distinct
+        artworks
+    end
 end

@@ -4,11 +4,7 @@ class ArtworksController < ApplicationController
         # user = User.all
         # render json: user
         user_id = params[:user_id]
-        # owned_artworks = Artwork.where(artist_id: user_id)
-        viewed_artworks = ArtworkShare.where(viewer_id: user_id).or(Artwork.where(artist_id: user_id))
-            .joins(:artwork).joins(:viewer)
-            .select("artworks.title,artworks.img_url,artworks.artist_id")
-            .distinct
+        viewed_artworks = Artwork.artworks_for_user_id(user_id)
         render json: viewed_artworks
 
         # artworks = Artwork.all
