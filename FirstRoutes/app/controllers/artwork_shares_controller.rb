@@ -1,7 +1,12 @@
 class ArtworkSharesController < ApplicationController
 
+    def index
+        artwork_shares = ArtworkShare.all
+        render json: artwork_shares
+    end
+
     def create
-        artwork_share = ArtworkShare.new(artwork_params)
+        artwork_share = ArtworkShare.new(artwork_share_params)
         if artwork_share.save
             render json: artwork_share
         else
@@ -12,13 +17,12 @@ class ArtworkSharesController < ApplicationController
     def destroy
         artwork_share = ArtworkShare.destroy(params[:id])
         artwork_share.destroy 
-        redirect_to(artwork_shares_url)
-
-
+        render json: artwork_share
     end
 
+    
 
     def artwork_share_params
-        params.require[:artwork_shares].permit[:viewer_id,:artwork_id]
+        params.require(:artwork_share).permit(:viewer_id,:artwork_id)
     end
 end

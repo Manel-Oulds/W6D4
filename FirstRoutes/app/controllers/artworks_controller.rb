@@ -1,15 +1,26 @@
 
 class ArtworksController < ApplicationController
     def index
-        artworks = Artwork.all
-        render json: artworks
+        # user = User.all
+        # render json: user
+        user_id = params[:user_id]
+        # owned_artworks = Artwork.where(artist_id: user_id)
+        viewed_artworks = ArtworkShare.where(viewer_id: user_id).or(Artwork.where(artist_id: user_id))
+            .joins(:artwork).joins(:viewer)
+            .select("artworks.title,artworks.img_url,artworks.artist_id")
+            .distinct
+        render json: viewed_artworks
+
+        # artworks = Artwork.all
+        # render json: artworks
+
     end
 
     def create
         # debugger
         artwork = Artwork.new(artwork_params)
         if artwork.save 
-            redirect_to artwork_url(artwork.id)  , status: :created
+            render json: artwork , status: :created
         else
             
             render json: artwork.errors.full_messages, status: :unprocessable_entity
@@ -35,7 +46,7 @@ class ArtworksController < ApplicationController
     def destroy
         artwork = Artwork.find(params[:id])
         artwork.destroy 
-        redirect_to(artworks_url)
+        render json: artwork
     end
 
     private
