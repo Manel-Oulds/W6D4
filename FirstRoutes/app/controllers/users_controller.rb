@@ -9,7 +9,7 @@ class UsersController < ApplicationController
         # debugger
         user = User.new(user_params)
         if user.save 
-            redirect_to user_url(user.id)  
+            redirect_to user_url(user.id)  , status: :created
         else
             
             render json: user.errors.full_messages, status: :unprocessable_entity
@@ -25,7 +25,8 @@ class UsersController < ApplicationController
     def update
         user = User.find(params[:id])
         if user.update(user_params) 
-            redirect_to user_url(user)
+            
+            render json: :user
         else
             render json: user.errors.full_messages, status: :unprocessible_entity
         end
@@ -39,6 +40,6 @@ class UsersController < ApplicationController
 
     private
     def user_params 
-        params.require(:user).permit(:name,:email)
+        params.require(:user).permit(:usename)
     end
 end
