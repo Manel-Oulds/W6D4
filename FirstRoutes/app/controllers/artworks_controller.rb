@@ -4,6 +4,7 @@ class ArtworksController < ApplicationController
         # user = User.all
         # render json: user
         user_id = params[:user_id]
+        # debugger
         viewed_artworks = Artwork.artworks_for_user_id(user_id)
         render json: viewed_artworks
 

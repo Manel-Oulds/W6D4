@@ -18,10 +18,13 @@ class Artwork < ApplicationRecord
     has_many :shared_viewers, through: :artwork_shares, source: :viewer
 
     def self.artworks_for_user_id(user_id)
-        artworks = ArtworkShare.where(viewer_id: user_id).or(Artwork.where(artist_id: user_id))
-            .joins(:artwork).joins(:viewer)
-            .select("artworks.title,artworks.img_url,artworks.artist_id")
-            .distinct
-        artworks
+        # debugger
+        # artworks = ArtworkShare.where(viewer_id: user_id).or(Artwork.where(artist_id: user_id))
+        #     .joins(:artwork).joins(:viewer)
+        #     .select("artworks.title,artworks.img_url,artworks.artist_id")
+        #     .distinct
+        # artworks
+        res =Artwork.left_outer_joins(:artwork_shares).where("viewer_id = #{user_id} OR artist_id = #{user_id}")
+        return res
     end
 end
